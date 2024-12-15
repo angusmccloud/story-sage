@@ -6,6 +6,8 @@ import Typography from '@/app/components/Typography/Typography';
 import getSeries from '@/app/services/getSeries';
 import getAnswer from '@/app/services/getAnswer';
 import ConversationInterface from '@/app/containers/ConversationInterface/ConversationInterface';
+import getConversationHistory from '@/app/utils/getConversationHistory';
+import setConversationHistory from '@/app/utils/setConversationHistory';
 
 export default function HomePage() {
   const [series, setSeries] = useState([]);
@@ -18,9 +20,19 @@ export default function HomePage() {
   const conversationEndRef = useRef(null);
 
   const handleSeriesChange = (event) => {
-    setSelectedSeries(event.target.value);
-    setSelectedBook(null);
-    setSelectedChapter(null);
+    const newSeries = event.target.value;
+    setSelectedSeries(newSeries);
+    const history = getConversationHistory(newSeries);
+    setConversation(history);
+
+    if (history.length > 0) {
+      const lastEntry = history[history.length - 1];
+      setSelectedBook(lastEntry.book || null);
+      setSelectedChapter(lastEntry.chapter || null);
+    } else {
+      setSelectedBook(null);
+      setSelectedChapter(null);
+    }
   };
 
   const handleBookChange = (event) => {
@@ -42,13 +54,16 @@ export default function HomePage() {
     ];
     setConversation(newConversation);
     setCurrentQuestion(''); // Clear the text field
+    setConversationHistory(selectedSeries, newConversation); // Update localStorage
 
     try {
       const answer = await getAnswer(currentQuestion, selectedBook, selectedChapter, selectedSeries);
-      setConversation([
+      const updatedConversation = [
         ...newConversation,
         { text: answer, askedBy: 'bot', book: selectedBook, chapter: selectedChapter }
-      ]);
+      ];
+      setConversation(updatedConversation);
+      setConversationHistory(selectedSeries, updatedConversation); // Update localStorage
       conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
       console.error('Error getting answer:', error);
