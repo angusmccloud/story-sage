@@ -8,6 +8,7 @@ import getAnswer from '@/app/services/getAnswer';
 import ConversationInterface from '@/app/containers/ConversationInterface/ConversationInterface';
 import getConversationHistory from '@/app/utils/getConversationHistory';
 import setConversationHistory from '@/app/utils/setConversationHistory';
+import PageWrapper from '@/app/containers/PageWrapper/PageWrapper';
 
 export default function HomePage() {
   const [series, setSeries] = useState([]);
@@ -88,8 +89,8 @@ export default function HomePage() {
   return (
     <>
       <PageHeader pageName="Story Sage" />
-      <Box sx={{ paddingLeft: 5, paddingRight: 5, paddingTop: 2, paddingBottom: 2 }}>
-        <Box sx={{paddingBottom: 2}}>
+      <PageWrapper>
+        <Box sx={{ paddingBottom: 2 }}>
           <Typography>
             Welcome to Story Sage. You can choose a series then ask questions about the books and chapters that you've read so far.
           </Typography>
@@ -109,7 +110,7 @@ export default function HomePage() {
           setCurrentQuestion={setCurrentQuestion}
           conversationEndRef={conversationEndRef}
         />
-      </Box>
+      </PageWrapper>
     </>
   );
 }
