@@ -9,6 +9,12 @@ import ConversationInterface from '@/app/containers/ConversationInterface/Conver
 import getConversationHistory from '@/app/utils/getConversationHistory';
 import setConversationHistory from '@/app/utils/setConversationHistory';
 import PageWrapper from '@/app/containers/PageWrapper/PageWrapper';
+import Dialog from '@/app/components/Dialog/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogActions from '@mui/material/DialogActions';
+import Button from '@/app/components/Button/Button';
 
 export default function HomePage() {
   const [series, setSeries] = useState([]);
@@ -19,6 +25,7 @@ export default function HomePage() {
   const [conversation, setConversation] = useState([]);
   const [conversationLoading, setConversationLoading] = useState(false);
   const conversationEndRef = useRef(null);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const handleSeriesChange = (event) => {
     const newSeries = event.target.value;
@@ -81,6 +88,20 @@ export default function HomePage() {
     }
   }
 
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+  };
+
+  const handleConfirmDelete = () => {
+    setConversation([]);
+    setConversationHistory(selectedSeries, []);
+    handleCloseDialog();
+  };
+
   useEffect(() => {
     const fetchSeries = async () => {
       const seriesData = await getSeries();
@@ -117,8 +138,25 @@ export default function HomePage() {
           handleAskQuestion={handleAskQuestion}
           setCurrentQuestion={setCurrentQuestion}
           conversationEndRef={conversationEndRef}
+          handleOpenDialog={handleOpenDialog}
         />
       </PageWrapper>
+      <Dialog open={dialogOpen} onClose={handleCloseDialog}>
+        <DialogTitle>Delete Conversation</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This will restart your conversation on this book series. Deleting the conversation can't be undone.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={handleConfirmDelete} color="primary">
+            Confirm Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 }

@@ -12,6 +12,8 @@ import SageLoading from '@/app/components/SageLoading/SageLoading';
 import ConditionalWrapper from '@/app/components/ConditionalWrapper/ConditionalWrapper';
 import ConversationBubble from '@/app/containers/ConversationBubble/ConversationBubble';
 import ConversationDivider from '@/app/containers/ConversationDivider/ConversationDivider';
+import Fab from '@/app/components/Fab/Fab';
+import DeleteIcon from '@mui/icons-material/Delete';
 import { useTheme, useMediaQuery } from '@mui/material';
 
 const ConversationInterface = ({
@@ -27,7 +29,8 @@ const ConversationInterface = ({
   handleChapterChange,
   handleAskQuestion,
   setCurrentQuestion,
-  conversationEndRef
+  conversationEndRef,
+  handleOpenDialog
 }) => {
   const theme = useTheme();
   const isXL = useMediaQuery(theme.breakpoints.up('xl'));
@@ -66,7 +69,7 @@ const ConversationInterface = ({
             disabled={!selectedSeries || conversationLoading}
           >
             {selectedSeriesBooks.map(b => (
-              <MenuItem key={b.numberInSeries} value={b.numberInSeries}>{b.title}</MenuItem>
+              <MenuItem key={b.numberInSeries} value={b.numberInSeries}>{b.title} ({b.numberInSeries})</MenuItem>
             ))}
           </Select>
         </FormControl>
@@ -87,7 +90,7 @@ const ConversationInterface = ({
       <ConditionalWrapper
         condition={conversation.length > 0 || conversationLoading}
         wrapper={(children) => (
-          <Box sx={{borderRadius: 3, borderColor: theme.palette.primary.main, borderWidth: 1, borderStyle: 'solid'}}>
+          <Box sx={{borderRadius: 3, borderColor: theme.palette.primary.main, borderWidth: 1, borderStyle: 'solid', position: 'relative'}}>
             <Box sx={{paddingTop: 2, paddingBottom: 2, paddingLeft: 2, paddingRight: 2, display: 'flex', flexDirection: 'column', maxHeight: { xs: '50vh', sm: '55vh', md: '60vh', lg: '65vh', xl: '70vh' }, overflowY: 'auto'}}>
               {conversation.map((entry, index) => {
                 const previousEntry = conversation[index - 1];
@@ -106,6 +109,11 @@ const ConversationInterface = ({
               <div ref={conversationEndRef} />
             </Box>
             {children}
+            {conversation.length >= 1 && (
+              <Fab color="secondary" sx={{ position: 'absolute', bottom: 88, right: 16 }} onClick={handleOpenDialog}>
+                <DeleteIcon />
+              </Fab>
+            )}
           </Box>
         )}
       >
