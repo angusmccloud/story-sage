@@ -9,7 +9,7 @@ async function getAnswer(question, bookNumber, chapterNumber, seriesId) {
       series_id: seriesId
     }, {
       headers: {
-        "ngrok-skip-browser-warning": "69420"
+        "ngrok-skip-browser-warning": "skip"
       },
       crossDomain: true
     });

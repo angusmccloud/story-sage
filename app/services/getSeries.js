@@ -21,7 +21,7 @@ async function getSeries() {
   try {
     const response = await axios.get('https://rapid-terribly-shrew.ngrok-free.app/invoke', {
       headers: {
-        "ngrok-skip-browser-warning": "69420"
+        "ngrok-skip-browser-warning": "skip"
       },  
       crossDomain: true
     });

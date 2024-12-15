@@ -57,8 +57,16 @@ export default function HomePage() {
     setCurrentQuestion(''); // Clear the text field
     setConversationHistory(selectedSeries, newConversation); // Update localStorage
 
+    const questionHistory = conversation.filter(
+      entry => entry.book === selectedBook && entry.chapter === selectedChapter
+    ).map(entry => entry.askedBy === 'user' ? `question: ${entry.text}` : `answer: ${entry.text}`);
+
+    const formattedQuestion = questionHistory.length > 0
+      ? `QUESTION: ${currentQuestion}\n\nQUESTION HISTORY FOR CONTEXT: ${questionHistory.join('\n')}`
+      : currentQuestion;
+
     try {
-      const answer = await getAnswer(currentQuestion, selectedBook, selectedChapter, selectedSeries);
+      const answer = await getAnswer(formattedQuestion, selectedBook, selectedChapter, selectedSeries);
       const updatedConversation = [
         ...newConversation,
         { text: answer, askedBy: 'bot', book: selectedBook, chapter: selectedChapter }
