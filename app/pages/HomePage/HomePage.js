@@ -17,73 +17,6 @@ import getAnswer from '@/app/services/getAnswer';
 import { useMediaQuery, useTheme } from '@mui/material';
 import ConversationBubble from '@/app/containers/ConversationBubble/ConversationBubble';
 
-const testConversation = [
-  {
-    text: 'Tell me about Sirius Black',
-    askedBy: 'user',
-  },
-  {
-    text: 'Sirius Black is a character in the Harry Potter series. He is the godfather of Harry Potter and a member of the Order of the Phoenix.',
-    askedBy: 'bot',
-  },
-  {
-    text: 'What is the Order of the Phoenix?',
-    askedBy: 'user',
-  },
-  {
-    text: 'The Order of the Phoenix is a secret society in the Harry Potter series. It was founded by Albus Dumbledore to fight against Lord Voldemort and his Death Eaters.',
-    askedBy: 'bot',
-  },
-  {
-    text: 'What is the Order of the Phoenix?',
-    askedBy: 'user',
-  },
-  {
-    text: 'The Order of the Phoenix is a secret society in the Harry Potter series. It was founded by Albus Dumbledore to fight against Lord Voldemort and his Death Eaters.',
-    askedBy: 'bot',
-  },
-  {
-    text: 'What is the Order of the Phoenix?',
-    askedBy: 'user',
-  },
-  {
-    text: 'The Order of the Phoenix is a secret society in the Harry Potter series. It was founded by Albus Dumbledore to fight against Lord Voldemort and his Death Eaters.',
-    askedBy: 'bot',
-  },
-  {
-    text: 'What is the Order of the Phoenix?',
-    askedBy: 'user',
-  },
-  {
-    text: 'The Order of the Phoenix is a secret society in the Harry Potter series. It was founded by Albus Dumbledore to fight against Lord Voldemort and his Death Eaters.',
-    askedBy: 'bot',
-  },
-  {
-    text: 'What is the Order of the Phoenix?',
-    askedBy: 'user',
-  },
-  {
-    text: 'The Order of the Phoenix is a secret society in the Harry Potter series. It was founded by Albus Dumbledore to fight against Lord Voldemort and his Death Eaters.',
-    askedBy: 'bot',
-  },
-  {
-    text: 'What is the Order of the Phoenix?',
-    askedBy: 'user',
-  },
-  {
-    text: 'The Order of the Phoenix is a secret society in the Harry Potter series. It was founded by Albus Dumbledore to fight against Lord Voldemort and his Death Eaters.',
-    askedBy: 'bot',
-  },
-  {
-    text: 'What is the Order of the Phoenix?',
-    askedBy: 'user',
-  },
-  {
-    text: 'The Order of the Phoenix is a secret society in the Harry Potter series. It was founded by Albus Dumbledore to fight against Lord Voldemort and his Death Eaters.',
-    askedBy: 'bot',
-  },
-]
-
 export default function HomePage() {
   const [series, setSeries] = useState([]);
   const [selectedSeries, setSelectedSeries] = useState(null);
@@ -119,13 +52,19 @@ export default function HomePage() {
     if (!currentQuestion) return;
 
     setConversationLoading(true);
-    const newConversation = [...conversation, { text: currentQuestion, askedBy: 'user' }];
+    const newConversation = [
+      ...conversation,
+      { text: currentQuestion, askedBy: 'user', book: selectedBook, chapter: selectedChapter }
+    ];
     setConversation(newConversation);
     setCurrentQuestion(''); // Clear the text field
 
     try {
       const answer = await getAnswer(currentQuestion, selectedBook, selectedChapter, selectedSeries);
-      setConversation([...newConversation, { text: answer, askedBy: 'bot' }]);
+      setConversation([
+        ...newConversation,
+        { text: answer, askedBy: 'bot', book: selectedBook, chapter: selectedChapter }
+      ]);
       conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
       console.error('Error getting answer:', error);
@@ -148,7 +87,6 @@ export default function HomePage() {
   }, [conversation]);
 
   const selectedSeriesBooks = selectedSeries ? series.find(s => s.seriesId === selectedSeries).books : [];
-  console.log('-- Series Length --', series.length);
 
   return (
     <>
@@ -209,9 +147,25 @@ export default function HomePage() {
           wrapper={(children) => (
             <Box sx={{borderRadius: 3, borderColor: theme.palette.primary.main, borderWidth: 1, borderStyle: 'solid'}}>
               <Box sx={{paddingTop: 2, paddingBottom: 2, paddingLeft: 2, paddingRight: 2, display: 'flex', flexDirection: 'column', maxHeight: '50vh', overflowY: 'auto'}}>
-                {conversation.map((entry, index) => (
-                  <ConversationBubble key={index} entry={entry} />
-                ))}
+                {conversation.map((entry, index) => {
+                  const previousEntry = conversation[index - 1];
+                  const showDivider = previousEntry && (previousEntry.book !== entry.book || previousEntry.chapter !== entry.chapter);
+              
+                  return (
+                    <React.Fragment key={index}>
+                      {showDivider && (
+                        <Box sx={{ display: 'flex', alignItems: 'center', marginY: 2 }}>
+                          <Box sx={{ flexGrow: 1, borderBottom: '1px solid', borderColor: theme.palette.divider }} />
+                          <Typography sx={{ marginX: 2, whiteSpace: 'nowrap' }}>
+                            {`Book ${entry.book}, Chapter ${entry.chapter}`}
+                          </Typography>
+                          <Box sx={{ flexGrow: 1, borderBottom: '1px solid', borderColor: theme.palette.divider }} />
+                        </Box>
+                      )}
+                      <ConversationBubble entry={entry} />
+                    </React.Fragment>
+                  );
+                })}
                 {conversationLoading && <SageLoading />}
                 <div ref={conversationEndRef} />
               </Box>
