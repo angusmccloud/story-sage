@@ -205,13 +205,14 @@ export default function HomePage() {
           />
         </Box>
         <ConditionalWrapper
-          condition={conversation.length > 0}
+          condition={conversation.length > 0 || conversationLoading}
           wrapper={(children) => (
             <Box sx={{borderRadius: 3, borderColor: theme.palette.primary.main, borderWidth: 1, borderStyle: 'solid'}}>
               <Box sx={{paddingTop: 2, paddingBottom: 2, paddingLeft: 2, paddingRight: 2, display: 'flex', flexDirection: 'column', maxHeight: '50vh', overflowY: 'auto'}}>
                 {conversation.map((entry, index) => (
                   <ConversationBubble key={index} entry={entry} />
                 ))}
+                {conversationLoading && <SageLoading />}
                 <div ref={conversationEndRef} />
               </Box>
               {children}
@@ -257,7 +258,6 @@ export default function HomePage() {
             </Button>
           </Box>
         </ConditionalWrapper>
-        <SageLoading />
         {/* <Typography>
           {JSON.stringify(series)}
         </Typography> */}
