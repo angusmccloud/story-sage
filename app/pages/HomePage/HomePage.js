@@ -2,8 +2,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PageHeader from '@/app/containers/PageHeader/PageHeader';
 import Box from '@/app/components/Box/Box';
-import Typography from '@/app/components/Typography/Typography';
 import Button from '@/app/components/Button/Button';
+import Typography from '@/app/components/Typography/Typography';
 import Select from '@/app/components/Select/Select';
 import Slider from '@/app/components/Slider/Slider';
 import FormControl from '@/app/components/FormControll/FormControl';
