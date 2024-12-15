@@ -88,7 +88,7 @@ const ConversationInterface = ({
         condition={conversation.length > 0 || conversationLoading}
         wrapper={(children) => (
           <Box sx={{borderRadius: 3, borderColor: theme.palette.primary.main, borderWidth: 1, borderStyle: 'solid'}}>
-            <Box sx={{paddingTop: 2, paddingBottom: 2, paddingLeft: 2, paddingRight: 2, display: 'flex', flexDirection: 'column', maxHeight: '50vh', overflowY: 'auto'}}>
+            <Box sx={{paddingTop: 2, paddingBottom: 2, paddingLeft: 2, paddingRight: 2, display: 'flex', flexDirection: 'column', maxHeight: { xs: '50vh', sm: '55vh', md: '60vh', lg: '65vh', xl: '70vh' }, overflowY: 'auto'}}>
               {conversation.map((entry, index) => {
                 const previousEntry = conversation[index - 1];
                 const showDivider = previousEntry && (previousEntry.book !== entry.book || previousEntry.chapter !== entry.chapter);
