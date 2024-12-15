@@ -1,0 +1,15 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-storysage-dev-c1acb-authRole",
+      "UnauthRoleArn": "arn:aws:iam::800476181102:role/amplify-storysage-dev-c1acb-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::800476181102:role/amplify-storysage-dev-c1acb-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-storysage-dev-c1acb-deployment",
+      "UnauthRoleName": "amplify-storysage-dev-c1acb-unauthRole",
+      "StackName": "amplify-storysage-dev-c1acb",
+      "StackId": "arn:aws:cloudformation:us-east-1:800476181102:stack/amplify-storysage-dev-c1acb/26ae4fd0-baf0-11ef-a574-0e501d1dc595",
+      "AmplifyAppId": "d18w599yuukd5r"
+    }
+  }
+}
