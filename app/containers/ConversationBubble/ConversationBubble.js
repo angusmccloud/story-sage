@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactMarkdown from 'react-markdown';
 import Box from '@/app/components/Box/Box';
 import Typography from '@/app/components/Typography/Typography';
 import { useTheme } from '@mui/material';
@@ -21,7 +22,21 @@ const ConversationBubble = ({ entry }) => {
         marginBottom: 1,
       }}
     >
-      <Typography>{entry.text}</Typography>
+      <ReactMarkdown
+        children={entry.text}
+        components={{
+          p: ({ children }) => (
+            <Typography>
+              {children}
+            </Typography>
+          ),
+          ul: ({ children }) => (
+            <ul style={{ marginTop: 0, marginBottom: 0, paddingInlineStart: '1em' }}>
+              {children}
+            </ul>
+          ),
+        }}
+      />
     </Box>
   );
 };
