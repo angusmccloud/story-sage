@@ -8,9 +8,19 @@ import Tooltip from '@/app/components/Tooltip/Tooltip';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ErrorIcon from '@mui/icons-material/Error';
+import postFeedback from '@/app/services/postFeedback';
 
 const ConversationBubble = ({ entry }) => {
   const theme = useTheme();
+
+  const handleFeedback = async (type) => {
+    const success = await postFeedback(entry.requestId, type);
+    if (success) {
+      console.log('Feedback posted successfully');
+    } else {
+      console.log('Failed to post feedback');
+    }
+  };
 
   return (
     <Box
@@ -45,17 +55,17 @@ const ConversationBubble = ({ entry }) => {
       {(entry.askedBy === 'bot' && entry.requestId) && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 1 }}>
           <Tooltip title="Included Spoilers">
-            <IconButton aria-label="Included Spoilers" color={'error'}>
+            <IconButton aria-label="Included Spoilers" color={'error'} onClick={() => handleFeedback('spoiler')}>
               <ErrorIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Not Helpful">
-            <IconButton aria-label="Not Helpful" color={'error'}>
+            <IconButton aria-label="Not Helpful" color={'error'} onClick={() => handleFeedback('negative')}>
               <ThumbDownIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title="Helpful">
-            <IconButton aria-label="Helpful" color={'success'}>
+            <IconButton aria-label="Helpful" color={'success'} onClick={() => handleFeedback('positive')}>
               <ThumbUpIcon />
             </IconButton>
           </Tooltip>
