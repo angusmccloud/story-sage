@@ -30,6 +30,9 @@ const theme = createTheme({
     background: {
       default: ghostWhite,
     },
+    success: {
+      main: darkSlateGreen,
+    }
     // text: {
     //   primary: darkSlateGreen,
     //   secondary: nonPhotoBlue,

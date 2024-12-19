@@ -3,6 +3,11 @@ import ReactMarkdown from 'react-markdown';
 import Box from '@/app/components/Box/Box';
 import Typography from '@/app/components/Typography/Typography';
 import { useTheme } from '@mui/material';
+import IconButton from '@/app/components/IconButton/IconButton';
+import Tooltip from '@/app/components/Tooltip/Tooltip';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ErrorIcon from '@mui/icons-material/Error';
 
 const ConversationBubble = ({ entry }) => {
   const theme = useTheme();
@@ -37,6 +42,25 @@ const ConversationBubble = ({ entry }) => {
           ),
         }}
       />
+      {entry.askedBy === 'bot' && (
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 1 }}>
+          <Tooltip title="Included Spoilers">
+            <IconButton aria-label="Included Spoilers" color={'error'}>
+              <ErrorIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Not Helpful">
+            <IconButton aria-label="Not Helpful" color={'error'}>
+              <ThumbDownIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Helpful">
+            <IconButton aria-label="Helpful" color={'success'}>
+              <ThumbUpIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )}
     </Box>
   );
 };

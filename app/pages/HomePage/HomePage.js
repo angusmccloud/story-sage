@@ -76,7 +76,7 @@ export default function HomePage() {
       const answer = await getAnswer(formattedQuestion, selectedBook, selectedChapter, selectedSeries);
       const updatedConversation = [
         ...newConversation,
-        { text: answer, askedBy: 'bot', book: selectedBook, chapter: selectedChapter }
+        { text: answer.result, askedBy: 'bot', book: selectedBook, chapter: selectedChapter }
       ];
       setConversation(updatedConversation);
       setConversationHistory(selectedSeries, updatedConversation); // Update localStorage
