@@ -42,7 +42,7 @@ const ConversationBubble = ({ entry }) => {
           ),
         }}
       />
-      {entry.askedBy === 'bot' && (
+      {(entry.askedBy === 'bot' && entry.requestId) && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 1 }}>
           <Tooltip title="Included Spoilers">
             <IconButton aria-label="Included Spoilers" color={'error'}>
