@@ -1,24 +1,34 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
-import Box from '@/app/components/Box/Box';
-import Typography from '@/app/components/Typography/Typography';
 import { useTheme } from '@mui/material';
-import IconButton from '@/app/components/IconButton/IconButton';
-import Tooltip from '@/app/components/Tooltip/Tooltip';
 import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 import ThumbDownIcon from '@mui/icons-material/ThumbDown';
 import ErrorIcon from '@mui/icons-material/Error';
+import Box from '@/app/components/Box/Box';
+import Typography from '@/app/components/Typography/Typography';
+import IconButton from '@/app/components/IconButton/IconButton';
+import Tooltip from '@/app/components/Tooltip/Tooltip';
 import postFeedback from '@/app/services/postFeedback';
+import { SnackbarContext } from '@/app/contexts/SnackbarContext/SnackbarContext';
 
 const ConversationBubble = ({ entry }) => {
   const theme = useTheme();
+  const { setSnackbar } = useContext(SnackbarContext);
 
   const handleFeedback = async (type) => {
     const success = await postFeedback(entry.requestId, type);
     if (success) {
-      console.log('Feedback posted successfully');
+      // console.log('Feedback posted successfully');
+      setSnackbar({
+        message: 'Feedback Received',
+        severity: 'success',
+      })
     } else {
-      console.log('Failed to post feedback');
+      // console.log('Failed to post feedback');
+      setSnackbar({
+        message: 'There was an Error Receiving Your Feedback',
+        severity: 'error',
+      })
     }
   };
 
