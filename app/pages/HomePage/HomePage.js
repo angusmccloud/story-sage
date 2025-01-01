@@ -1,4 +1,7 @@
+// 'use client' directive for Next.js to indicate this is a client-side component
 'use client';
+
+// Import necessary React hooks and components
 import React, { useState, useEffect, useRef } from 'react';
 import PageHeader from '@/app/containers/PageHeader/PageHeader';
 import Box from '@/app/components/Box/Box';
@@ -16,17 +19,20 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@/app/components/Button/Button';
 
+// Main component for the HomePage
 export default function HomePage() {
-  const [series, setSeries] = useState([]);
-  const [selectedSeries, setSelectedSeries] = useState(null);
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [selectedChapter, setSelectedChapter] = useState(null);
-  const [currentQuestion, setCurrentQuestion] = useState('');
-  const [conversation, setConversation] = useState([]);
-  const [conversationLoading, setConversationLoading] = useState(false);
-  const conversationEndRef = useRef(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  // State variables to manage the component's state
+  const [series, setSeries] = useState([]); // List of series
+  const [selectedSeries, setSelectedSeries] = useState(null); // Currently selected series
+  const [selectedBook, setSelectedBook] = useState(null); // Currently selected book
+  const [selectedChapter, setSelectedChapter] = useState(null); // Currently selected chapter
+  const [currentQuestion, setCurrentQuestion] = useState(''); // Current question being asked
+  const [conversation, setConversation] = useState([]); // Conversation history
+  const [conversationLoading, setConversationLoading] = useState(false); // Loading state for conversation
+  const conversationEndRef = useRef(null); // Reference to the end of the conversation for auto-scrolling
+  const [dialogOpen, setDialogOpen] = useState(false); // State to manage the dialog visibility
 
+  // Handle series change event
   const handleSeriesChange = (event) => {
     const newSeries = event.target.value;
     setSelectedSeries(newSeries);
@@ -43,15 +49,18 @@ export default function HomePage() {
     }
   };
 
+  // Handle book change event
   const handleBookChange = (event) => {
     setSelectedBook(event.target.value);
     setSelectedChapter(null);
   };
 
+  // Handle chapter change event
   const handleChapterChange = (event, value) => {
     setSelectedChapter(value);
   };
 
+  // Handle asking a question
   const handleAskQuestion = async () => {
     if (!currentQuestion) return;
 
@@ -88,20 +97,24 @@ export default function HomePage() {
     }
   }
 
+  // Handle opening the dialog
   const handleOpenDialog = () => {
     setDialogOpen(true);
   };
 
+  // Handle closing the dialog
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
 
+  // Handle confirming the deletion of the conversation
   const handleConfirmDelete = () => {
     setConversation([]);
     setConversationHistory(selectedSeries, []);
     handleCloseDialog();
   };
 
+  // Fetch series data when the component mounts
   useEffect(() => {
     const fetchSeries = async () => {
       const seriesData = await getSeries();
@@ -111,10 +124,12 @@ export default function HomePage() {
     fetchSeries();
   }, []);
 
+  // Scroll to the end of the conversation when it updates
   useEffect(() => {
     conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
 
+  // Render the component
   return (
     <>
       <PageHeader pageName="Story Sage" />

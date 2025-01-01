@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  // basePath: "/story-sage",
+  basePath: "/story_sage_frontend",
   output: "export",  // <=== enables static exports
   // reactStrictMode: true,
   images: {
