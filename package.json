@@ -2,7 +2,7 @@
   "name": "story-sage",
   "version": "V0.1.0-alpha",
   "private": true,
-  "homepage": "https://chrispatten.github.io/story-sage_frontend",
+  "homepage": "https://chrispatten.github.io/story_sage_frontend",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
