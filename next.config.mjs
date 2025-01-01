@@ -3,7 +3,7 @@
 const nextConfig = {
   basePath: "/story_sage_frontend",
   assetPrefix: "/story_sage_frontend/",
-  output: "export",  // <=== enables static exports
+  output: "exports",  // <=== enables static exports
   // reactStrictMode: true,
   images: {
     unoptimized: true,
