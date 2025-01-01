@@ -2,12 +2,13 @@
   "name": "story-sage",
   "version": "V0.1.0-alpha",
   "private": true,
-  "homepage": "https://chrispatten.github.io/story_sage_frontend",
+  "homepage": "https://storysage.app",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "predeploy": "npm run build",
     "deploy": "gh-pages -d out"
   },
   "dependencies": {

@@ -1,6 +1,9 @@
+const isProd = process.env.NODE_ENV === 'production';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: "/story_sage_frontend",
+  basePath: isProd ? "/story_sage_frontend" : "",
+  assetPrefix: isProd ? "/story_sage_frontend/" : "",
   output: "export",  // <=== enables static exports
   // reactStrictMode: true,
   images: {
