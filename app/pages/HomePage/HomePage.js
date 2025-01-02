@@ -33,6 +33,7 @@ export default function HomePage() {
   const [conversationLoading, setConversationLoading] = useState(false); // Loading state for conversation
   const conversationEndRef = useRef(null); // Reference to the end of the conversation for auto-scrolling
   const [dialogOpen, setDialogOpen] = useState(false); // State to manage the dialog visibility
+  const [conversationId, setConversationId] = useState(null); // Conversation ID
 
   // Handle series change event
   const handleSeriesChange = (event) => {
@@ -79,13 +80,14 @@ export default function HomePage() {
     const formattedQuestion = currentQuestion;
 
     try {
-      const answer = await getAnswer(formattedQuestion, selectedBook, selectedChapter, selectedSeries);
+      const answer = await getAnswer(formattedQuestion, selectedBook, selectedChapter, selectedSeries, conversationId);
       const updatedConversation = [
         ...newConversation,
         { text: answer.result, askedBy: 'bot', book: selectedBook, chapter: selectedChapter, requestId: answer.request_id, context: answer.context }
       ];
       setConversation(updatedConversation);
       setConversationHistory(selectedSeries, updatedConversation); // Update localStorage
+      setConversationId(answer.conversation_id); // Update conversation ID
       conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
       console.error('Error getting answer:', error);
