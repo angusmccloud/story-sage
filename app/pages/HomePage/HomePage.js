@@ -110,6 +110,7 @@ export default function HomePage() {
   const handleConfirmDelete = () => {
     setConversation([]);
     setConversationHistory(selectedSeries, []);
+    setConversationId(null);
     handleCloseDialog();
   };
 
