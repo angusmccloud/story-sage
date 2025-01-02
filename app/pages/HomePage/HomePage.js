@@ -165,6 +165,7 @@ export default function HomePage() {
           setCurrentQuestion={setCurrentQuestion}
           conversationEndRef={conversationEndRef}
           handleOpenDialog={handleOpenDialog}
+          conversationId={conversationId}
         />
       </PageWrapper>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>

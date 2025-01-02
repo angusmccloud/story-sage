@@ -30,7 +30,8 @@ const ConversationInterface = ({
   handleAskQuestion,
   setCurrentQuestion,
   conversationEndRef,
-  handleOpenDialog
+  handleOpenDialog,
+  conversationId
 }) => {
   const theme = useTheme();
   const isXL = useMediaQuery(theme.breakpoints.up('xl'));
@@ -109,7 +110,7 @@ const ConversationInterface = ({
                     {(index === 0 || showDivider) && (
                       <ConversationDivider book={entry.book} chapter={entry.chapter} />
                     )}
-                    <ConversationBubble entry={entry} />
+                    <ConversationBubble entry={entry} conversationId={conversationId} />
                   </React.Fragment>
                 );
               })}
