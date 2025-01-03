@@ -11,6 +11,8 @@ import getAnswer from '@/app/services/getAnswer';
 import ConversationInterface from '@/app/containers/ConversationInterface/ConversationInterface';
 import getConversationHistory from '@/app/utils/getConversationHistory';
 import setConversationHistory from '@/app/utils/setConversationHistory';
+import getLastSeries from '@/app/utils/getLastSeries';
+import setLastSeries from '@/app/utils/setLastSeries';
 import PageWrapper from '@/app/containers/PageWrapper/PageWrapper';
 import Dialog from '@/app/components/Dialog/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -31,11 +33,13 @@ export default function HomePage() {
   const [conversationLoading, setConversationLoading] = useState(false); // Loading state for conversation
   const conversationEndRef = useRef(null); // Reference to the end of the conversation for auto-scrolling
   const [dialogOpen, setDialogOpen] = useState(false); // State to manage the dialog visibility
+  const [conversationId, setConversationId] = useState(null); // Conversation ID
 
   // Handle series change event
   const handleSeriesChange = (event) => {
     const newSeries = event.target.value;
     setSelectedSeries(newSeries);
+    setLastSeries(newSeries);
     const history = getConversationHistory(newSeries);
     setConversation(history);
 
@@ -73,22 +77,17 @@ export default function HomePage() {
     setCurrentQuestion(''); // Clear the text field
     setConversationHistory(selectedSeries, newConversation); // Update localStorage
 
-    const questionHistory = conversation.filter(
-      entry => entry.book === selectedBook && entry.chapter === selectedChapter
-    ).map(entry => entry.askedBy === 'user' ? `question: ${entry.text}` : `answer: ${entry.text}`);
-
-    const formattedQuestion = questionHistory.length > 0
-      ? `QUESTION: ${currentQuestion}\n\nQUESTION HISTORY FOR CONTEXT: ${questionHistory.join('\n')}`
-      : currentQuestion;
+    const formattedQuestion = currentQuestion;
 
     try {
-      const answer = await getAnswer(formattedQuestion, selectedBook, selectedChapter, selectedSeries);
+      const answer = await getAnswer(formattedQuestion, selectedBook, selectedChapter, selectedSeries, conversationId);
       const updatedConversation = [
         ...newConversation,
         { text: answer.result, askedBy: 'bot', book: selectedBook, chapter: selectedChapter, requestId: answer.request_id, context: answer.context }
       ];
       setConversation(updatedConversation);
       setConversationHistory(selectedSeries, updatedConversation); // Update localStorage
+      setConversationId(answer.conversation_id); // Update conversation ID
       conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
       console.error('Error getting answer:', error);
@@ -111,6 +110,7 @@ export default function HomePage() {
   const handleConfirmDelete = () => {
     setConversation([]);
     setConversationHistory(selectedSeries, []);
+    setConversationId(null);
     handleCloseDialog();
   };
 
@@ -119,6 +119,17 @@ export default function HomePage() {
     const fetchSeries = async () => {
       const seriesData = await getSeries();
       setSeries(seriesData);
+      const lastSeries = getLastSeries();
+      if (lastSeries) {
+        setSelectedSeries(lastSeries);
+        const history = getConversationHistory(lastSeries);
+        setConversation(history);
+        if (history.length > 0) {
+          const lastEntry = history[history.length - 1];
+          setSelectedBook(lastEntry.book || null);
+          setSelectedChapter(lastEntry.chapter || null);
+        }
+      }
     };
 
     fetchSeries();
@@ -154,6 +165,7 @@ export default function HomePage() {
           setCurrentQuestion={setCurrentQuestion}
           conversationEndRef={conversationEndRef}
           handleOpenDialog={handleOpenDialog}
+          conversationId={conversationId}
         />
       </PageWrapper>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
