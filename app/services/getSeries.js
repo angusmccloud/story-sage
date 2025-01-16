@@ -1,5 +1,7 @@
 const axios = require('axios');
 
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 function underscoreToCamel(str) {
   return str.replace(/_([a-z])/g, (match, letter) => letter.toUpperCase());
 }
@@ -19,7 +21,7 @@ function convertKeysToCamelCase(obj) {
 
 async function getSeries() {
   try {
-    const response = await axios.get('https://rapid-terribly-shrew.ngrok-free.app/invoke', {
+    const response = await axios.get(`${backendUrl}/invoke`, {
       headers: {
         "ngrok-skip-browser-warning": "skip"
       },  

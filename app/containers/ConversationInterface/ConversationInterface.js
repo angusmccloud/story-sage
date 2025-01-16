@@ -30,7 +30,8 @@ const ConversationInterface = ({
   handleAskQuestion,
   setCurrentQuestion,
   conversationEndRef,
-  handleOpenDialog
+  handleOpenDialog,
+  conversationId
 }) => {
   const theme = useTheme();
   const isXL = useMediaQuery(theme.breakpoints.up('xl'));
@@ -74,19 +75,27 @@ const ConversationInterface = ({
           </Select>
         </FormControl>
       </Box>
-      <Box sx={{ marginTop: 2 }}>
-        <Typography>
-          Chapters Read
-        </Typography>
-        <Slider
-          value={selectedChapter || 1}
-          onChange={handleChapterChange}
-          min={1}
-          max={selectedBook ? selectedSeriesBooks.find(b => b.numberInSeries === selectedBook).numberOfChapters : 1}
-          disabled={!selectedBook || conversationLoading}
-          valueLabelDisplay="auto"
-        />
-      </Box>
+      {selectedSeries && selectedBook ? (
+        <Box sx={{ marginTop: 2 }}>
+          <Typography>
+            Chapters Read: {selectedChapter || 1}
+          </Typography>
+          <Slider
+            value={selectedChapter || 1}
+            onChange={handleChapterChange}
+            min={1}
+            max={selectedBook ? selectedSeriesBooks.find(b => b.numberInSeries === selectedBook).numberOfChapters : 1}
+            disabled={!selectedBook || conversationLoading}
+            valueLabelDisplay="auto"
+          />
+        </Box>
+      ) : (
+        <Box sx={{ marginTop: 2, marginBottom: 2 }}>
+          <Typography>
+            Please select a series and book.
+          </Typography>
+        </Box>
+      )}
       <ConditionalWrapper
         condition={conversation.length > 0 || conversationLoading}
         wrapper={(children) => (
@@ -101,7 +110,7 @@ const ConversationInterface = ({
                     {(index === 0 || showDivider) && (
                       <ConversationDivider book={entry.book} chapter={entry.chapter} />
                     )}
-                    <ConversationBubble entry={entry} />
+                    <ConversationBubble entry={entry} conversationId={conversationId} />
                   </React.Fragment>
                 );
               })}

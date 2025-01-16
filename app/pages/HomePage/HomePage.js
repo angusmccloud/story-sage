@@ -1,4 +1,7 @@
+// 'use client' directive for Next.js to indicate this is a client-side component
 'use client';
+
+// Import necessary React hooks and components
 import React, { useState, useEffect, useRef } from 'react';
 import PageHeader from '@/app/containers/PageHeader/PageHeader';
 import Box from '@/app/components/Box/Box';
@@ -8,6 +11,8 @@ import getAnswer from '@/app/services/getAnswer';
 import ConversationInterface from '@/app/containers/ConversationInterface/ConversationInterface';
 import getConversationHistory from '@/app/utils/getConversationHistory';
 import setConversationHistory from '@/app/utils/setConversationHistory';
+import getLastSeries from '@/app/utils/getLastSeries';
+import setLastSeries from '@/app/utils/setLastSeries';
 import PageWrapper from '@/app/containers/PageWrapper/PageWrapper';
 import Dialog from '@/app/components/Dialog/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -16,20 +21,25 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@/app/components/Button/Button';
 
+// Main component for the HomePage
 export default function HomePage() {
-  const [series, setSeries] = useState([]);
-  const [selectedSeries, setSelectedSeries] = useState(null);
-  const [selectedBook, setSelectedBook] = useState(null);
-  const [selectedChapter, setSelectedChapter] = useState(null);
-  const [currentQuestion, setCurrentQuestion] = useState('');
-  const [conversation, setConversation] = useState([]);
-  const [conversationLoading, setConversationLoading] = useState(false);
-  const conversationEndRef = useRef(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  // State variables to manage the component's state
+  const [series, setSeries] = useState([]); // List of series
+  const [selectedSeries, setSelectedSeries] = useState(null); // Currently selected series
+  const [selectedBook, setSelectedBook] = useState(null); // Currently selected book
+  const [selectedChapter, setSelectedChapter] = useState(null); // Currently selected chapter
+  const [currentQuestion, setCurrentQuestion] = useState(''); // Current question being asked
+  const [conversation, setConversation] = useState([]); // Conversation history
+  const [conversationLoading, setConversationLoading] = useState(false); // Loading state for conversation
+  const conversationEndRef = useRef(null); // Reference to the end of the conversation for auto-scrolling
+  const [dialogOpen, setDialogOpen] = useState(false); // State to manage the dialog visibility
+  const [conversationId, setConversationId] = useState(null); // Conversation ID
 
+  // Handle series change event
   const handleSeriesChange = (event) => {
     const newSeries = event.target.value;
     setSelectedSeries(newSeries);
+    setLastSeries(newSeries);
     const history = getConversationHistory(newSeries);
     setConversation(history);
 
@@ -43,15 +53,18 @@ export default function HomePage() {
     }
   };
 
+  // Handle book change event
   const handleBookChange = (event) => {
     setSelectedBook(event.target.value);
     setSelectedChapter(null);
   };
 
+  // Handle chapter change event
   const handleChapterChange = (event, value) => {
     setSelectedChapter(value);
   };
 
+  // Handle asking a question
   const handleAskQuestion = async () => {
     if (!currentQuestion) return;
 
@@ -64,22 +77,17 @@ export default function HomePage() {
     setCurrentQuestion(''); // Clear the text field
     setConversationHistory(selectedSeries, newConversation); // Update localStorage
 
-    const questionHistory = conversation.filter(
-      entry => entry.book === selectedBook && entry.chapter === selectedChapter
-    ).map(entry => entry.askedBy === 'user' ? `question: ${entry.text}` : `answer: ${entry.text}`);
-
-    const formattedQuestion = questionHistory.length > 0
-      ? `QUESTION: ${currentQuestion}\n\nQUESTION HISTORY FOR CONTEXT: ${questionHistory.join('\n')}`
-      : currentQuestion;
+    const formattedQuestion = currentQuestion;
 
     try {
-      const answer = await getAnswer(formattedQuestion, selectedBook, selectedChapter, selectedSeries);
+      const answer = await getAnswer(formattedQuestion, selectedBook, selectedChapter, selectedSeries, conversationId);
       const updatedConversation = [
         ...newConversation,
         { text: answer.result, askedBy: 'bot', book: selectedBook, chapter: selectedChapter, requestId: answer.request_id, context: answer.context }
       ];
       setConversation(updatedConversation);
       setConversationHistory(selectedSeries, updatedConversation); // Update localStorage
+      setConversationId(answer.conversation_id); // Update conversation ID
       conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
       console.error('Error getting answer:', error);
@@ -88,33 +96,51 @@ export default function HomePage() {
     }
   }
 
+  // Handle opening the dialog
   const handleOpenDialog = () => {
     setDialogOpen(true);
   };
 
+  // Handle closing the dialog
   const handleCloseDialog = () => {
     setDialogOpen(false);
   };
 
+  // Handle confirming the deletion of the conversation
   const handleConfirmDelete = () => {
     setConversation([]);
     setConversationHistory(selectedSeries, []);
+    setConversationId(null);
     handleCloseDialog();
   };
 
+  // Fetch series data when the component mounts
   useEffect(() => {
     const fetchSeries = async () => {
       const seriesData = await getSeries();
       setSeries(seriesData);
+      const lastSeries = getLastSeries();
+      if (lastSeries) {
+        setSelectedSeries(lastSeries);
+        const history = getConversationHistory(lastSeries);
+        setConversation(history);
+        if (history.length > 0) {
+          const lastEntry = history[history.length - 1];
+          setSelectedBook(lastEntry.book || null);
+          setSelectedChapter(lastEntry.chapter || null);
+        }
+      }
     };
 
     fetchSeries();
   }, []);
 
+  // Scroll to the end of the conversation when it updates
   useEffect(() => {
     conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
 
+  // Render the component
   return (
     <>
       <PageHeader pageName="Story Sage" />
@@ -139,6 +165,7 @@ export default function HomePage() {
           setCurrentQuestion={setCurrentQuestion}
           conversationEndRef={conversationEndRef}
           handleOpenDialog={handleOpenDialog}
+          conversationId={conversationId}
         />
       </PageWrapper>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>

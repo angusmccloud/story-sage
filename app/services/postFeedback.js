@@ -1,11 +1,14 @@
 const axios = require('axios');
 
-async function postFeedback(requestId, type) {
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+async function postFeedback(requestId, type, conversationId) {
   try {
-    const response = await axios.post('https://rapid-terribly-shrew.ngrok-free.app/feedback', {
+    const response = await axios.post(`${backendUrl}/feedback`, {
       request_id: requestId,
       type: type,
       feedback: '',
+      conversation_id: conversationId
     }, {
       headers: {
         "ngrok-skip-browser-warning": "skip"

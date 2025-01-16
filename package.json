@@ -1,12 +1,16 @@
 {
   "name": "story-sage",
-  "version": "0.1.0",
+  "version": "V0.1.1-alpha",
   "private": true,
+  "homepage": "https://storysage.app",
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:local": "node runWithEnv.js .env.local",
+    "dev:production": "node runWithEnv.js .env.production",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "deploy": "gh-pages -d out"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -15,10 +19,14 @@
     "@mui/icons-material": "^6.2.0",
     "@mui/material": "^6.2.0",
     "axios": "^1.7.9",
+    "dotenv": "^16.4.7",
     "next": "15.1.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-markdown": "^8.0.6",
     "uuid": "^11.0.3"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.2.0"
   }
 }

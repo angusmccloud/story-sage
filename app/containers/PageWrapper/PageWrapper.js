@@ -9,6 +9,8 @@ const PageWrapper = ({ children }) => {
         paddingRight: { xs: 1, sm: 2, md: 3, lg: 4, xl: 5 },
         paddingTop: 2,
         paddingBottom: 2,
+        maxWidth: { xs: '100%', sm: '100%', md: '100%', lg: '80%', xl: '80%' },
+        margin: '0 auto',
       }}
     >
       {children}

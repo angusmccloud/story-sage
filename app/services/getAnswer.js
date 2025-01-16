@@ -1,13 +1,21 @@
 const axios = require('axios');
 
-async function getAnswer(question, bookNumber, chapterNumber, seriesId) {
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+async function getAnswer(question, bookNumber, chapterNumber, seriesId, conversationId = null) {
   try {
-    const response = await axios.post('https://rapid-terribly-shrew.ngrok-free.app/invoke', {
+    const requestBody = {
       question,
       book_number: bookNumber,
       chapter_number: chapterNumber,
       series_id: seriesId
-    }, {
+    };
+
+    if (conversationId) {
+      requestBody.conversation_id = conversationId;
+    }
+
+    const response = await axios.post(`${backendUrl}/invoke`, requestBody, {
       headers: {
         "ngrok-skip-browser-warning": "skip"
       },

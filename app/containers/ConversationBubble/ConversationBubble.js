@@ -11,12 +11,12 @@ import Tooltip from '@/app/components/Tooltip/Tooltip';
 import postFeedback from '@/app/services/postFeedback';
 import { SnackbarContext } from '@/app/contexts/SnackbarContext/SnackbarContext';
 
-const ConversationBubble = ({ entry }) => {
+const ConversationBubble = ({ entry, conversationId }) => {
   const theme = useTheme();
   const { setSnackbar } = useContext(SnackbarContext);
 
   const handleFeedback = async (type) => {
-    const success = await postFeedback(entry.requestId, type);
+    const success = await postFeedback(entry.requestId, type, conversationId);
     if (success) {
       // console.log('Feedback posted successfully');
       setSnackbar({
