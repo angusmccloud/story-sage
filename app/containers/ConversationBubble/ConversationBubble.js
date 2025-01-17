@@ -51,7 +51,9 @@ const ConversationBubble = ({ entry, conversationId }) => {
         children={entry.text}
         components={{
           p: ({ children }) => (
-            <Typography>
+            <Typography sx={{
+              marginBottom: entry.askedBy === 'bot' ? '1em' : 0,
+            }}>
               {children}
             </Typography>
           ),
@@ -62,7 +64,7 @@ const ConversationBubble = ({ entry, conversationId }) => {
           ),
         }}
       />
-      {(entry.askedBy === 'bot' && entry.requestId) && (
+      {(entry.askedBy === 'bot') && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 1 }}>
           <Tooltip title="Included Spoilers">
             <IconButton aria-label="Included Spoilers" color={'error'} onClick={() => handleFeedback('spoiler')}>
