@@ -37,7 +37,7 @@ const ConversationBubble = ({ entry, conversationId }) => {
       sx={{
         width: '80%',
         alignSelf: entry.askedBy === 'user' ? 'flex-end' : 'flex-start',
-        backgroundColor: entry.askedBy === 'user' ? theme.palette.primary.main : theme.palette.background.default,
+        backgroundColor: entry.askedBy === 'user' ? theme.palette.primary.main : theme.palette.background.paper,
         color: entry.askedBy === 'user' ? theme.palette.primary.contrastText : theme.palette.text.primary,
         borderRadius: entry.askedBy === 'user' ? '16px 16px 0 16px' : '16px 16px 16px 0',
         borderWidth: entry.askedBy === 'bot' ? 1 : 0,

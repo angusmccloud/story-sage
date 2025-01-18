@@ -43,20 +43,17 @@ const PageHeader = ({ pageName }) => {
           position: 'relative', // added for absolute Typography positioning
         }}
       >
-        <MainMenu />
-        <Typography 
-          variant="h6" 
+        <MainMenu
+          fontSize='2rem'
           sx={{ 
-            fontFamily: 'Cookie, cursive',
-            fontSize: '2.2rem',
-            position: 'absolute',
-            bottom: 12.5,
-            left: 60,
-            lineHeight: 1,
-            zIndex: 1
+            display: isM ? 'block' : 'none',
+            backgroundColor: 'primary.paper',
           }}
+        />
+        <Typography 
+          variant="pageTitle"
         >
-          {pageName}
+          StorySage
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
         <img src={logoImage.src} alt="Story Sage" style={{ height: "100%", width: "auto", position: "relative", borderRadius: 0 }} />

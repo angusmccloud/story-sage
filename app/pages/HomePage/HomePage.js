@@ -146,9 +146,9 @@ export default function HomePage() {
     <>
       <PageHeader pageName="Story Sage" />
       <PageWrapper>
-        <Box sx={{ paddingBottom: 2 }}>
+        <Box sx={{ paddingBottom: 4 }}>
           <Typography>
-            Welcome to Story Sage. You can choose a series then ask questions about the books and chapters that you've read so far.
+            Welcome to Story Sage! You can choose a series then ask questions about the books and chapters that you've read so far.
           </Typography>
         </Box>
         <ConversationInterface

@@ -14,6 +14,8 @@ import ConversationBubble from '@/app/containers/ConversationBubble/Conversation
 import ConversationDivider from '@/app/containers/ConversationDivider/ConversationDivider';
 import Fab from '@/app/components/Fab/Fab';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 import { useTheme, useMediaQuery } from '@mui/material';
 
 const ConversationInterface = ({
@@ -45,11 +47,23 @@ const ConversationInterface = ({
     <>
       <Box sx={{ display: 'flex', flexDirection: isXL || isL || isM ? 'row' : 'column', gap: 2 }}>
         <FormControl fullWidth={isS}>
-          <InputLabel id="series-select-label">Select a Series</InputLabel>
+          <InputLabel 
+            id="series-select-label"
+            sx={{ 
+              fontFamily: theme.typography.inputLabel.fontFamily,
+              fontSize: theme.typography.inputLabel.fontSize,
+              '&.Mui-focused': {
+                fontFamily: theme.typography.inputLabel.fontFamily,
+              },
+              top: "-10px"
+            }}
+          >
+            Series
+          </InputLabel>
           <Select
             labelId="series-select-label"
             id="series-select"
-            label="Select a Series"
+            label="Series"
             value={selectedSeries || ''}
             onChange={handleSeriesChange}
             disabled={series.length === 0 || conversationLoading}
@@ -60,11 +74,23 @@ const ConversationInterface = ({
           </Select>
         </FormControl>
         <FormControl fullWidth={isS}>
-          <InputLabel id="book-select-label">Select Current Book</InputLabel>
+          <InputLabel 
+            id="book-select-label"
+            sx={{ 
+              fontFamily: theme.typography.inputLabel.fontFamily,
+              fontSize: theme.typography.inputLabel.fontSize,
+              '&.Mui-focused': {
+                fontFamily: theme.typography.inputLabel.fontFamily,
+              },
+              top: "-10px"
+            }}
+          >
+            Book
+          </InputLabel>
           <Select
             labelId="book-select-label"
             id="book-select"
-            label="Select Current Book"
+            label="Book"
             value={selectedBook || ''}
             onChange={handleBookChange}
             disabled={!selectedSeries || conversationLoading}
@@ -77,9 +103,32 @@ const ConversationInterface = ({
       </Box>
       {selectedSeries && selectedBook ? (
         <Box sx={{ marginTop: 2 }}>
-          <Typography>
-            Chapters Read: {selectedChapter || 1}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, marginBottom: 1 }}>
+            <Button
+              size="small"
+              variant="outlined"
+              color="primaryDark"
+              onClick={() => handleChapterChange(null, Math.max(1, (selectedChapter || 1) - 1))}
+              disabled={!selectedBook || conversationLoading || selectedChapter === 1}
+            >
+              <RemoveIcon />
+            </Button>
+            <Typography 
+              variant="pageAccent"
+              sx={{ minWidth: '120px', textAlign: 'center', fontSize: '2rem' }}
+            >
+              Chapter: {selectedChapter || 1}
+            </Typography>
+            <Button
+              size="small"
+              variant="outlined"
+              color="primaryDark"
+              onClick={() => handleChapterChange(null, Math.min(selectedSeriesBooks.find(b => b.numberInSeries === selectedBook).numberOfChapters, (selectedChapter || 1) + 1))}
+              disabled={!selectedBook || conversationLoading || selectedChapter === selectedSeriesBooks.find(b => b.numberInSeries === selectedBook).numberOfChapters}
+            >
+              <AddIcon />
+            </Button>
+          </Box>
           <Slider
             value={selectedChapter || 1}
             onChange={handleChapterChange}
@@ -112,7 +161,13 @@ const ConversationInterface = ({
       <ConditionalWrapper
         condition={conversation.length > 0 || conversationLoading}
         wrapper={(children) => (
-          <Box sx={{borderRadius: 3, borderColor: theme.palette.primary.main, borderWidth: 1, borderStyle: 'solid', position: 'relative'}}>
+          <Box sx={{
+            borderRadius: 3, 
+            borderColor: theme.palette.primary.main, 
+            borderWidth: 1, 
+            borderStyle: 'solid', 
+            position: 'relative',
+          }}>
             <Box sx={{paddingTop: 2, paddingBottom: 2, paddingLeft: 2, paddingRight: 2, display: 'flex', flexDirection: 'column', maxHeight: { xs: '50vh', sm: '55vh', md: '60vh', lg: '65vh', xl: '70vh' }, overflowY: 'auto'}}>
               {conversation.map((entry, index) => {
                 const previousEntry = conversation[index - 1];
@@ -162,8 +217,16 @@ const ConversationInterface = ({
           />
           <Button
             variant="contained"
-            color="primary"
-            sx={{marginTop: 1, marginBottom: 1}}
+            color="secondary"
+            sx={{
+              marginTop: 1, 
+              marginBottom: 1,
+              // backgroundColor: theme.palette.primary.dark,
+              // color: "white",
+              // '&:hover': {
+              //   backgroundColor: theme.palette.primary.highlight,
+              // }
+            }}
             onClick={handleAskQuestion}
             disabled={
               series.length === 0 ||

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
+import Divider from '@mui/material/Divider';
+import Typography from '@mui/material/Typography';
+import ArrowBack from '@mui/icons-material/ArrowBack';
 
-const MainMenu = () => {
+const MainMenu = ({ fontSize }) => {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const handleMenuOpen = (event) => {
@@ -44,16 +48,46 @@ const MainMenu = () => {
           horizontal: 'right',
         }}
       >
-        <MenuItem onClick={handleMenuClose}>📖 Story Snacks</MenuItem>
-        <MenuItem onClick={handleMenuClose}>🎭 Character Chat</MenuItem>
-        <MenuItem onClick={handleMenuClose}>📑 Quick Quote Quest</MenuItem>
-        <MenuItem onClick={handleMenuClose}>⏰ Timeline Tracker</MenuItem>
-        <MenuItem onClick={handleMenuClose}>🗺️ Plot Plotter</MenuItem>
-
-
+        <Typography variant="pageAccent" sx={{ fontSize, paddingLeft: '10px' }}>{`Story Sage`}</Typography>
+        <Divider />
+        <MenuItem onClick={handleMenuClose}>
+          <Typography variant="pageAccent" sx={{ fontSize }}>{`📖 Story Snacks`}</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <Typography variant="pageAccent" sx={{ fontSize }}>{`🎭 Character Chat`}</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <Typography variant="pageAccent" sx={{ fontSize }}>{`📑 Quick Quote Quest`}</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <Typography variant="pageAccent" sx={{ fontSize }}>{`⏰ Timeline Tracker`}</Typography>
+        </MenuItem>
+        <MenuItem onClick={handleMenuClose}>
+          <Typography variant="pageAccent" sx={{ fontSize }}>{`🗺️ Plot Plotter`}</Typography>
+        </MenuItem>
+        <Divider />
+        <MenuItem 
+          onClick={handleMenuClose}
+          sx={{
+            justifyContent: 'flex-start',
+            color: 'text.secondary'
+          }}
+        >
+          <Typography variant="pageAccent" sx={{ fontSize }}>
+            <ArrowBack sx={{ marginRight: '8px' }} /> Close
+          </Typography>
+        </MenuItem>
       </Menu>
     </>
   );
+};
+
+MainMenu.propTypes = {
+  fontSize: PropTypes.string
+};
+
+MainMenu.defaultProps = {
+  fontSize: '1rem'
 };
 
 export default MainMenu;

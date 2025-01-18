@@ -9,7 +9,7 @@ const ConversationDivider = ({ book, chapter }) => {
   return (
     <Box sx={{ display: 'flex', alignItems: 'center', marginY: 2 }}>
       <Box sx={{ flexGrow: 1, borderBottom: '1px solid', borderColor: theme.palette.divider }} />
-      <Typography sx={{ marginX: 2, whiteSpace: 'nowrap' }}>
+      <Typography variant="pageAccent" sx={{ marginX: 2, whiteSpace: 'nowrap', fontSize: '1.5rem' }}>
         {`Book ${book}, Chapter ${chapter}`}
       </Typography>
       <Box sx={{ flexGrow: 1, borderBottom: '1px solid', borderColor: theme.palette.divider }} />
