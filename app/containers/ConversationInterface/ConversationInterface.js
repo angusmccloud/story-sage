@@ -87,6 +87,19 @@ const ConversationInterface = ({
             max={selectedBook ? selectedSeriesBooks.find(b => b.numberInSeries === selectedBook).numberOfChapters : 1}
             disabled={!selectedBook || conversationLoading}
             valueLabelDisplay="auto"
+            sx={{
+              color: theme.palette.primary.dark,
+              '& .MuiSlider-thumb': {
+                color: theme.palette.primary.dark,
+              },
+              '& .MuiSlider-track': {
+                color: theme.palette.primary.dark,
+              },
+              '& .MuiSlider-rail': {
+                color: theme.palette.primary.dark,
+                opacity: 0.3,
+              }
+            }}
           />
         </Box>
       ) : (

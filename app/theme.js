@@ -8,6 +8,7 @@ const darkSlateGreen = '#384D48';
 const roseTaupe = '#86615c';
 const ghostWhite = '#E8E9F3';
 const nonPhotoBlue = '#B1E5F2';
+const deepPlum = '#301e2c';
 
 const roboto = Roboto({
   weight: ['300', '400', '500', '700'],
@@ -22,6 +23,7 @@ const theme = createTheme({
     primary: {
       main: mossGreen,
       dark: darkMossGreen,
+      highlight: deepPlum
     },
     secondary: {
       main: darkSlateGreen,

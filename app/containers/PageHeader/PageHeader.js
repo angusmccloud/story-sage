@@ -34,25 +34,32 @@ const PageHeader = ({ pageName }) => {
           margin: '0 auto',
           color: 'white',
           alignItems: 'center',
-          gap: 0,  // reduced from 2 to 1
-          paddingLeft: 2,   // add left padding
-          paddingRight: 2,   // add right padding
-          paddingTop: 1,
-          paddingBottom: 1
+          gap: 0,
+          paddingLeft: 2,
+          paddingRight: 0,
+          paddingTop: 0,
+          paddingBottom: 0,
+          height: '4rem',
+          position: 'relative', // added for absolute Typography positioning
         }}
       >
         <MainMenu />
         <Typography 
           variant="h6" 
           sx={{ 
-            flexGrow: 1,
             fontFamily: 'Cookie, cursive',
-            fontSize: '2.2rem'  // slightly reduced from 2rem
+            fontSize: '2.2rem',
+            position: 'absolute',
+            bottom: 12.5,
+            left: 60,
+            lineHeight: 1,
+            zIndex: 1
           }}
         >
           {pageName}
         </Typography>
-        <img src={logoImage.src} alt="Story Sage" style={{ height: 50, width: 50, borderRadius: 20 }} />
+        <Box sx={{ flexGrow: 1 }} />
+        <img src={logoImage.src} alt="Story Sage" style={{ height: "100%", width: "auto", position: "relative", borderRadius: 0 }} />
       </Box>
     </Box>
   );

@@ -21,12 +21,12 @@ const MainMenu = () => {
         edge="start"
         sx={{ 
           color: 'white',
-          marginRight: 2 
+          marginRight: 0.5
         }}
         aria-label="menu"
         onClick={handleMenuOpen}
       >
-        <MenuIcon />
+        <MenuIcon sx={{ fontSize: 38 }} />
       </IconButton>
       <Menu
         anchorEl={anchorEl}
@@ -44,12 +44,35 @@ const MainMenu = () => {
           horizontal: 'right',
         }}
       >
-        <MenuItem onClick={handleMenuClose}>FAQ</MenuItem>
-        <MenuItem onClick={handleMenuClose}>Series Request</MenuItem>
-        <MenuItem onClick={handleMenuClose}>About</MenuItem>
+        <MenuItem onClick={handleMenuClose}>📖 Story Snacks</MenuItem>
+        <MenuItem onClick={handleMenuClose}>🎭 Character Chat</MenuItem>
+        <MenuItem onClick={handleMenuClose}>📑 Quick Quote Quest</MenuItem>
+        <MenuItem onClick={handleMenuClose}>⏰ Timeline Tracker</MenuItem>
+        <MenuItem onClick={handleMenuClose}>🗺️ Plot Plotter</MenuItem>
+
+
       </Menu>
     </>
   );
 };
 
 export default MainMenu;
+
+/*
+
+📚 Bookworm's Buffet
+🔮 Plot Predictor
+🦉 Wisdom Whisperer
+📖 Story Snacks
+🪶 Quill Quest
+🎭 Character Chat
+☕️ Chapter & Chill
+🌙 Bedtime Bytes
+☕️ Chapter & Chill
+📑 Quick Quote Quest
+📚 Series Seeker
+🎭 Character Compass
+🗺️ Plot Plotter
+⏰ Timeline Tracker
+🎬 Scene Scanner
+*/
