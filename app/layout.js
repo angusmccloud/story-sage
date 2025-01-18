@@ -5,6 +5,13 @@ import { ThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Snackbar, Alert } from '@mui/material';
 import theme from '@/app/theme';
+import { Cookie } from 'next/font/google';
+
+const cookie = Cookie({
+  weight: '400',
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 export default function RootLayout(props) {
   const [showSnackbar, setShowSnackbar] = useState(false);

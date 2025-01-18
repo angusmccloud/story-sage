@@ -3,6 +3,7 @@ import { Roboto } from 'next/font/google';
 import { createTheme } from '@mui/material/styles';
 
 const mossGreen = '#9ba770';
+const darkMossGreen = '#14231B';
 const darkSlateGreen = '#384D48';
 const roseTaupe = '#86615c';
 const ghostWhite = '#E8E9F3';
@@ -20,6 +21,7 @@ const theme = createTheme({
     mode: 'light',
     primary: {
       main: mossGreen,
+      dark: darkMossGreen,
     },
     secondary: {
       main: darkSlateGreen,

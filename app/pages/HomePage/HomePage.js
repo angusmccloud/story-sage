@@ -20,6 +20,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@/app/components/Button/Button';
+import CoffeeWidget from "@/app/components/CoffeeWidget/CoffeeWidget";
 
 // Main component for the HomePage
 export default function HomePage() {
@@ -167,6 +168,23 @@ export default function HomePage() {
           handleOpenDialog={handleOpenDialog}
           conversationId={conversationId}
         />
+        <Box sx={{ 
+          marginTop: 4,
+          paddingTop: 2,
+          borderTop: 1,
+          textAlign: 'center'
+        }}>
+        <Typography variant="body2" color="text.secondary">
+          Made with ❤️ (and GitHub Copilot) by Chris Patten. &copy; {new Date().getFullYear()}
+        <br />
+        <a href="https://github.com/ChrisPatten/story_sage" target="_blank" rel="noopener noreferrer">
+            <i className="fab fa-github"></i> Check this out on GitHub
+        </a>
+        </Typography>
+      </Box>
+      <CoffeeWidget 
+        scale={0.8} 
+      />
       </PageWrapper>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Delete Conversation</DialogTitle>
