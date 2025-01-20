@@ -51,9 +51,11 @@ const ConversationBubble = ({ entry, conversationId }) => {
         children={entry.text}
         components={{
           p: ({ children }) => (
-            <Typography sx={{
-              marginBottom: entry.askedBy === 'bot' ? '1em' : 0,
-            }}>
+            <Typography 
+              variant={entry.askedBy === 'bot' ? 'botMessage' : 'userMessage'}
+              sx={{
+                marginBottom: entry.askedBy === 'bot' ? '1em' : 0,
+              }}>
               {children}
             </Typography>
           ),

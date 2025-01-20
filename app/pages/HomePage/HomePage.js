@@ -22,6 +22,14 @@ import DialogActions from '@mui/material/DialogActions';
 import Button from '@/app/components/Button/Button';
 import CoffeeWidget from "@/app/components/CoffeeWidget/CoffeeWidget";
 
+const loadingMessages = [
+  "Consulting the ancient tomes...",
+  "Analyzing the narrative...",
+  "Gathering literary insights...",
+  "Processing chapter context...",
+  "Crafting a thoughtful response...",
+];
+
 // Main component for the HomePage
 export default function HomePage() {
   // State variables to manage the component's state
@@ -35,6 +43,19 @@ export default function HomePage() {
   const conversationEndRef = useRef(null); // Reference to the end of the conversation for auto-scrolling
   const [dialogOpen, setDialogOpen] = useState(false); // State to manage the dialog visibility
   const [conversationId, setConversationId] = useState(null); // Conversation ID
+  const [currentLoadingMessage, setCurrentLoadingMessage] = useState(0);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+
+  useEffect(() => {
+    let interval;
+    if (conversationLoading) {
+      interval = setInterval(() => {
+        setCurrentLoadingMessage((prev) => (prev + 1) % loadingMessages.length);
+      }, 3000);
+    }
+    return () => interval && clearInterval(interval);
+  }, [conversationLoading]);
 
   // Handle series change event
   const handleSeriesChange = (event) => {
@@ -92,6 +113,11 @@ export default function HomePage() {
       conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
       console.error('Error getting answer:', error);
+      setErrorMessage('Unable to connect to Story Sage. Please try again later.');
+      setErrorDialogOpen(true);
+      // Remove the user's question from the conversation since we couldn't get an answer
+      setConversation([...conversation]);
+      setConversationHistory(selectedSeries, [...conversation]);
     } finally {
       setConversationLoading(false);
     }
@@ -115,21 +141,31 @@ export default function HomePage() {
     handleCloseDialog();
   };
 
+  const handleCloseErrorDialog = () => {
+    setErrorDialogOpen(false);
+  };
+
   // Fetch series data when the component mounts
   useEffect(() => {
     const fetchSeries = async () => {
-      const seriesData = await getSeries();
-      setSeries(seriesData);
-      const lastSeries = getLastSeries();
-      if (lastSeries) {
-        setSelectedSeries(lastSeries);
-        const history = getConversationHistory(lastSeries);
-        setConversation(history);
-        if (history.length > 0) {
-          const lastEntry = history[history.length - 1];
-          setSelectedBook(lastEntry.book || null);
-          setSelectedChapter(lastEntry.chapter || null);
+      try {
+        const seriesData = await getSeries();
+        setSeries(seriesData);
+        const lastSeries = getLastSeries();
+        if (lastSeries) {
+          setSelectedSeries(lastSeries);
+          const history = getConversationHistory(lastSeries);
+          setConversation(history);
+          if (history.length > 0) {
+            const lastEntry = history[history.length - 1];
+            setSelectedBook(lastEntry.book || null);
+            setSelectedChapter(lastEntry.chapter || null);
+          }
         }
+      } catch (error) {
+        console.error('Error fetching series:', error);
+        setErrorMessage("Sorry, but I'm having trouble getting into my library. Please try again later.");
+        setErrorDialogOpen(true);
       }
     };
 
@@ -167,6 +203,7 @@ export default function HomePage() {
           conversationEndRef={conversationEndRef}
           handleOpenDialog={handleOpenDialog}
           conversationId={conversationId}
+          loadingMessage={loadingMessages[currentLoadingMessage]}
         />
         <Box sx={{ 
           marginTop: 4,
@@ -199,6 +236,19 @@ export default function HomePage() {
           </Button>
           <Button onClick={handleConfirmDelete} color="primary">
             Confirm Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={errorDialogOpen} onClose={handleCloseErrorDialog}>
+        <DialogTitle>Error</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {errorMessage}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseErrorDialog} color="primary">
+            Close
           </Button>
         </DialogActions>
       </Dialog>

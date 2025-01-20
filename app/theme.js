@@ -71,7 +71,7 @@ const theme = createTheme({
     }
   },
   typography: {
-    fontFamily: libreCaslonText.style.fontFamily,
+    fontFamily: roboto.style.fontFamily,
     letterSpacing: '0.02em',
     pageTitle: {
       fontFamily: inLivingColor.style.fontFamily,
@@ -93,6 +93,18 @@ const theme = createTheme({
       fontSize: '2rem',
       lineHeight: 1.2,
       letterSpacing: '0.02em'
+    },
+    botMessage: {
+      fontFamily: libreCaslonText.style.fontFamily,
+      fontSize: '1rem',
+      lineHeight: 1.2,
+      letterSpacing: '0.02em'
+    },
+    userMessage: {
+      fontFamily: roboto.style.fontFamily,
+      fontSize: '1rem',
+      lineHeight: 1.2,
+      letterSpacing: '0.0em'
     }
   },
 });

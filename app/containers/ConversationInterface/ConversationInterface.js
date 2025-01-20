@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import Box from '@/app/components/Box/Box';
 import Typography from '@/app/components/Typography/Typography';
 import Select from '@/app/components/Select/Select';
@@ -17,6 +17,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useTheme, useMediaQuery } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
+import QuestionHistory from '../../utils/QuestionHistory';
 
 const ConversationInterface = ({
   series,
@@ -29,11 +31,12 @@ const ConversationInterface = ({
   handleSeriesChange,
   handleBookChange,
   handleChapterChange,
-  handleAskQuestion,
+  handleAskQuestion: originalHandleAskQuestion,
   setCurrentQuestion,
   conversationEndRef,
   handleOpenDialog,
-  conversationId
+  conversationId,
+  loadingMessage
 }) => {
   const theme = useTheme();
   const isXL = useMediaQuery(theme.breakpoints.up('xl'));
@@ -41,7 +44,28 @@ const ConversationInterface = ({
   const isM = useMediaQuery(theme.breakpoints.up('md'));
   const isS = useMediaQuery(theme.breakpoints.up('sm'));
 
+  const questionHistory = useRef(new QuestionHistory());
+
   const selectedSeriesBooks = selectedSeries ? series.find(s => s.seriesId === selectedSeries).books : [];
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleQuestionSubmit();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setCurrentQuestion(questionHistory.current.previous());
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setCurrentQuestion(questionHistory.current.next());
+    }
+  };
+
+  const handleQuestionSubmit = () => {
+    if (!currentQuestion) return;
+    questionHistory.current.add(currentQuestion);
+    originalHandleAskQuestion();
+  };
 
   return (
     <>
@@ -182,7 +206,20 @@ const ConversationInterface = ({
                   </React.Fragment>
                 );
               })}
-              {conversationLoading && <SageLoading />}
+              {conversationLoading && (
+                <Box sx={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  padding: 2,
+                  marginTop: 2
+                }}>
+                  <CircularProgress size={20} sx={{ marginRight: 1 }} />
+                  <Typography variant="body2" color="text.secondary">
+                    {loadingMessage}
+                  </Typography>
+                </Box>
+              )}
               <div ref={conversationEndRef} />
             </Box>
             {children}
@@ -201,11 +238,7 @@ const ConversationInterface = ({
             variant="outlined"
             value={currentQuestion || ''}
             onChange={(e) => setCurrentQuestion(e.target.value)}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                handleAskQuestion();
-              }
-            }}
+            onKeyDown={handleKeyDown}
             sx = {{marginTop: 1, marginBottom: 1, marginRight: 1}}
             disabled={
               series.length === 0 ||
@@ -227,7 +260,7 @@ const ConversationInterface = ({
               //   backgroundColor: theme.palette.primary.highlight,
               // }
             }}
-            onClick={handleAskQuestion}
+            onClick={handleQuestionSubmit}
             disabled={
               series.length === 0 ||
               !selectedSeries ||
