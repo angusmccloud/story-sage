@@ -48,7 +48,10 @@ const MainMenu = ({ fontSize }) => {
           horizontal: 'right',
         }}
       >
-        <Typography variant="pageAccent" sx={{ fontSize, paddingLeft: '10px' }}>{`Story Sage`}</Typography>
+        <Typography variant="pageAccent" sx={{ fontSize, paddingLeft: '15px' }}>{`Story Sage`}</Typography>
+        <MenuItem onClick={handleMenuClose}>
+          <Typography variant="pageAccent" sx={{ fontSize: "1rem" }}>{`These don't do anything yet 😅`}</Typography>
+        </MenuItem>
         <Divider />
         <MenuItem onClick={handleMenuClose}>
           <Typography variant="pageAccent" sx={{ fontSize }}>{`📖 Story Snacks`}</Typography>

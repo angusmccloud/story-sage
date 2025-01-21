@@ -45,6 +45,21 @@ const vestardia = localFont({
   display: 'swap',
 })
 
+const lifesavers = localFont({
+  src: [
+    {
+      path: './fonts/lifesavers-regular-webfont.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: './fonts/lifesavers-bold-webfont.woff2',
+      weight: '700',
+      style: 'normal',
+    }
+  ]
+})
+
 const theme = createTheme({
   cssVariables: true,
   palette: {
@@ -77,6 +92,14 @@ const theme = createTheme({
       fontFamily: inLivingColor.style.fontFamily,
       fontSize: '2rem',
       fontWeight: 500,
+      // Optional additional styling
+      lineHeight: 1.2,
+      letterSpacing: '0.02em'
+    },
+    introMessage: {
+      fontFamily: lifesavers.style.fontFamily,
+      fontSize: '1.2rem',
+      fontWeight: 700,
       // Optional additional styling
       lineHeight: 1.2,
       letterSpacing: '0.02em'

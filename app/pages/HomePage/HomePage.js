@@ -28,6 +28,17 @@ const loadingMessages = [
   "Gathering literary insights...",
   "Processing chapter context...",
   "Crafting a thoughtful response...",
+  "Delving into the story...",
+  "Searching for the answer...",
+  "Exploring the plot...",
+  "Decoding the text...",
+  "Seeking meaning...",
+  "Interpreting the story...",
+  "Analyzing the text...",
+  "Unraveling the mystery...",
+  "Investigating the plot...",
+  "Plotting a response...",
+  "Deciphering the story...",
 ];
 
 // Main component for the HomePage
@@ -46,6 +57,7 @@ export default function HomePage() {
   const [currentLoadingMessage, setCurrentLoadingMessage] = useState(0);
   const [errorDialogOpen, setErrorDialogOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const questionInputRef = useRef(null);
 
   useEffect(() => {
     let interval;
@@ -97,6 +109,7 @@ export default function HomePage() {
     ];
     setConversation(newConversation);
     setCurrentQuestion(''); // Clear the text field
+    questionInputRef.current?.focus(); // Keep focus on input
     setConversationHistory(selectedSeries, newConversation); // Update localStorage
 
     const formattedQuestion = currentQuestion;
@@ -183,8 +196,10 @@ export default function HomePage() {
       <PageHeader pageName="Story Sage" />
       <PageWrapper>
         <Box sx={{ paddingBottom: 4 }}>
-          <Typography>
-            Welcome to Story Sage! You can choose a series then ask questions about the books and chapters that you've read so far.
+          <Typography variant="introMessage">
+            Welcome to Story Sage! I'm an AI that can answer questions about books without
+            give you spoilers. I'm pretty smart, but I may not always be accurate or complete.
+            If you see something strange, click the thumbs down button to let my creator know!
           </Typography>
         </Box>
         <ConversationInterface
@@ -204,6 +219,7 @@ export default function HomePage() {
           handleOpenDialog={handleOpenDialog}
           conversationId={conversationId}
           loadingMessage={loadingMessages[currentLoadingMessage]}
+          questionInputRef={questionInputRef}
         />
         <Box sx={{ 
           marginTop: 4,

@@ -36,7 +36,8 @@ const ConversationInterface = ({
   conversationEndRef,
   handleOpenDialog,
   conversationId,
-  loadingMessage
+  loadingMessage,
+  questionInputRef
 }) => {
   const theme = useTheme();
   const isXL = useMediaQuery(theme.breakpoints.up('xl'));
@@ -247,6 +248,7 @@ const ConversationInterface = ({
               !selectedChapter ||
               conversationLoading
             }
+            inputRef={questionInputRef}
           />
           <Button
             variant="contained"
