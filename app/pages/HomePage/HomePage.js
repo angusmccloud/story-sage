@@ -165,7 +165,8 @@ export default function HomePage() {
         const seriesData = await getSeries();
         setSeries(seriesData);
         const lastSeries = getLastSeries();
-        if (lastSeries) {
+        // Check if lastSeries exists in the fetched data
+        if (lastSeries && seriesData.some(series => series.id === lastSeries.id)) {
           setSelectedSeries(lastSeries);
           const history = getConversationHistory(lastSeries);
           setConversation(history);
