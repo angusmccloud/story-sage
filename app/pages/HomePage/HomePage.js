@@ -2,7 +2,7 @@
 'use client';
 
 // Import necessary React hooks and components
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, use } from 'react';
 import PageHeader from '@/app/containers/PageHeader/PageHeader';
 import Box from '@/app/components/Box/Box';
 import Typography from '@/app/components/Typography/Typography';
@@ -20,6 +20,26 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogActions from '@mui/material/DialogActions';
 import Button from '@/app/components/Button/Button';
+import CoffeeWidget from "@/app/components/CoffeeWidget/CoffeeWidget";
+
+const loadingMessages = [
+  "Consulting the ancient tomes...",
+  "Analyzing the narrative...",
+  "Gathering literary insights...",
+  "Processing chapter context...",
+  "Crafting a thoughtful response...",
+  "Delving into the story...",
+  "Searching for the answer...",
+  "Exploring the plot...",
+  "Decoding the text...",
+  "Seeking meaning...",
+  "Interpreting the story...",
+  "Analyzing the text...",
+  "Unraveling the mystery...",
+  "Investigating the plot...",
+  "Plotting a response...",
+  "Deciphering the story...",
+];
 
 // Main component for the HomePage
 export default function HomePage() {
@@ -34,6 +54,20 @@ export default function HomePage() {
   const conversationEndRef = useRef(null); // Reference to the end of the conversation for auto-scrolling
   const [dialogOpen, setDialogOpen] = useState(false); // State to manage the dialog visibility
   const [conversationId, setConversationId] = useState(null); // Conversation ID
+  const [currentLoadingMessage, setCurrentLoadingMessage] = useState(0);
+  const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const questionInputRef = useRef(null);
+
+  useEffect(() => {
+    let interval;
+    if (conversationLoading) {
+      interval = setInterval(() => {
+        setCurrentLoadingMessage((prev) => (prev + 1) % loadingMessages.length);
+      }, 3000);
+    }
+    return () => interval && clearInterval(interval);
+  }, [conversationLoading]);
 
   // Handle series change event
   const handleSeriesChange = (event) => {
@@ -75,6 +109,7 @@ export default function HomePage() {
     ];
     setConversation(newConversation);
     setCurrentQuestion(''); // Clear the text field
+    questionInputRef.current?.focus(); // Keep focus on input
     setConversationHistory(selectedSeries, newConversation); // Update localStorage
 
     const formattedQuestion = currentQuestion;
@@ -91,6 +126,11 @@ export default function HomePage() {
       conversationEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     } catch (error) {
       console.error('Error getting answer:', error);
+      setErrorMessage('Unable to connect to Story Sage. Please try again later.');
+      setErrorDialogOpen(true);
+      // Remove the user's question from the conversation since we couldn't get an answer
+      setConversation([...conversation]);
+      setConversationHistory(selectedSeries, [...conversation]);
     } finally {
       setConversationLoading(false);
     }
@@ -114,26 +154,44 @@ export default function HomePage() {
     handleCloseDialog();
   };
 
+  const handleCloseErrorDialog = () => {
+    setErrorDialogOpen(false);
+  };
+
   // Fetch series data when the component mounts
   useEffect(() => {
     const fetchSeries = async () => {
-      const seriesData = await getSeries();
-      setSeries(seriesData);
-      const lastSeries = getLastSeries();
-      if (lastSeries) {
-        setSelectedSeries(lastSeries);
-        const history = getConversationHistory(lastSeries);
-        setConversation(history);
-        if (history.length > 0) {
-          const lastEntry = history[history.length - 1];
-          setSelectedBook(lastEntry.book || null);
-          setSelectedChapter(lastEntry.chapter || null);
-        }
+      try {
+        console.log('Fetching series data...');
+        const seriesData = await getSeries();
+        setSeries(seriesData);
+      } catch (error) {
+        console.error('Error fetching series:', error);
+        setErrorMessage("Sorry, but I'm having trouble getting into my library. Please try again later.");
+        setErrorDialogOpen(true);
       }
     };
 
     fetchSeries();
   }, []);
+
+  useEffect(() => {
+    if (!series.length) return;
+
+    const lastSeries = getLastSeries();
+    // Check if lastSeries exists in the fetched data
+    if (lastSeries && series.some(s => s.id === lastSeries.id)) {
+      console.log('lastSeries found and lastSeries in seriesData');
+      setSelectedSeries(lastSeries);
+      const history = getConversationHistory(lastSeries);
+      setConversation(history);
+      if (history.length > 0) {
+        const lastEntry = history[history.length - 1];
+        setSelectedBook(lastEntry.book || null);
+        setSelectedChapter(lastEntry.chapter || null);
+      }
+    }
+  }, [series]);
 
   // Scroll to the end of the conversation when it updates
   useEffect(() => {
@@ -145,9 +203,11 @@ export default function HomePage() {
     <>
       <PageHeader pageName="Story Sage" />
       <PageWrapper>
-        <Box sx={{ paddingBottom: 2 }}>
-          <Typography>
-            Welcome to Story Sage. You can choose a series then ask questions about the books and chapters that you've read so far.
+        <Box sx={{ paddingBottom: 4 }}>
+          <Typography variant="introMessage">
+            Welcome to Story Sage! I'm an AI that can answer questions about books without
+            give you spoilers. I'm pretty smart, but I may not always be accurate or complete.
+            If you see something strange, click the thumbs down button to let my creator know!
           </Typography>
         </Box>
         <ConversationInterface
@@ -166,7 +226,26 @@ export default function HomePage() {
           conversationEndRef={conversationEndRef}
           handleOpenDialog={handleOpenDialog}
           conversationId={conversationId}
+          loadingMessage={loadingMessages[currentLoadingMessage]}
+          questionInputRef={questionInputRef}
         />
+        <Box sx={{ 
+          marginTop: 4,
+          paddingTop: 2,
+          borderTop: 1,
+          textAlign: 'center'
+        }}>
+        <Typography variant="body2" color="text.secondary">
+          Made with ❤️ (and GitHub Copilot) by Chris Patten. &copy; {new Date().getFullYear()}
+        <br />
+        <a href="https://github.com/ChrisPatten/story_sage" target="_blank" rel="noopener noreferrer">
+            <i className="fab fa-github"></i> Check this out on GitHub
+        </a>
+        </Typography>
+      </Box>
+      <CoffeeWidget 
+        scale={0.8} 
+      />
       </PageWrapper>
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>Delete Conversation</DialogTitle>
@@ -181,6 +260,19 @@ export default function HomePage() {
           </Button>
           <Button onClick={handleConfirmDelete} color="primary">
             Confirm Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog open={errorDialogOpen} onClose={handleCloseErrorDialog}>
+        <DialogTitle>Error</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            {errorMessage}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseErrorDialog} color="primary">
+            Close
           </Button>
         </DialogActions>
       </Dialog>

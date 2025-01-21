@@ -1,4 +1,5 @@
 const axios = require('axios');
+const getConversationHistory = require('../utils/getConversationHistory');
 
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -29,7 +30,9 @@ async function getSeries() {
     });
     const series = response.data;
     const camelCaseSeries = convertKeysToCamelCase(series);
-    return camelCaseSeries.sort((a, b) => a.seriesName.localeCompare(b.seriesName));
+    const sortedSeries = camelCaseSeries.sort((a, b) => a.seriesName.localeCompare(b.seriesName));
+
+    return sortedSeries;
   } catch (error) {
     console.error('Error fetching series data:', error);
     throw error;

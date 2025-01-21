@@ -37,7 +37,7 @@ const ConversationBubble = ({ entry, conversationId }) => {
       sx={{
         width: '80%',
         alignSelf: entry.askedBy === 'user' ? 'flex-end' : 'flex-start',
-        backgroundColor: entry.askedBy === 'user' ? theme.palette.primary.main : theme.palette.background.default,
+        backgroundColor: entry.askedBy === 'user' ? theme.palette.primary.main : theme.palette.background.paper,
         color: entry.askedBy === 'user' ? theme.palette.primary.contrastText : theme.palette.text.primary,
         borderRadius: entry.askedBy === 'user' ? '16px 16px 0 16px' : '16px 16px 16px 0',
         borderWidth: entry.askedBy === 'bot' ? 1 : 0,
@@ -51,7 +51,11 @@ const ConversationBubble = ({ entry, conversationId }) => {
         children={entry.text}
         components={{
           p: ({ children }) => (
-            <Typography>
+            <Typography 
+              variant={entry.askedBy === 'bot' ? 'botMessage' : 'userMessage'}
+              sx={{
+                marginBottom: entry.askedBy === 'bot' ? '1em' : 0,
+              }}>
               {children}
             </Typography>
           ),
@@ -62,7 +66,7 @@ const ConversationBubble = ({ entry, conversationId }) => {
           ),
         }}
       />
-      {(entry.askedBy === 'bot' && entry.requestId) && (
+      {(entry.askedBy === 'bot') && (
         <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 1 }}>
           <Tooltip title="Included Spoilers">
             <IconButton aria-label="Included Spoilers" color={'error'} onClick={() => handleFeedback('spoiler')}>
