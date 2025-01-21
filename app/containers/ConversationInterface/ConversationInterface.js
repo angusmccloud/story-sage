@@ -21,6 +21,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import QuestionHistory from '../../utils/QuestionHistory';
+const imageUrl = process.env.NEXT_PUBLIC_IMAGE_URL;
 
 const ConversationInterface = ({
   series,
@@ -214,9 +215,23 @@ const ConversationInterface = ({
                 onChange={handleBookChange}
                 disabled={!selectedSeries || conversationLoading}
               >
-                {selectedSeriesBooks.map(b => (
-                  <MenuItem key={b.numberInSeries} value={b.numberInSeries}>{b.title} ({b.numberInSeries})</MenuItem>
-                ))}
+                {selectedSeriesBooks.map(b => {
+                  const img = b.coverImage ? `${imageUrl}/${b.coverImage}` : null;
+                  return (
+                    <ConditionalWrapper
+                      key={b.numberInSeries}
+                      condition={img}
+                      wrapper={(children) => (
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginBottom: '5px' }}>
+                          <img src={img} alt={b.title} style={{ height: '36px', marginLeft: '6px'}} />
+                          {children}
+                        </div>
+                      )}
+                    >
+                      <MenuItem key={b.numberInSeries} value={b.numberInSeries}>{b.title} ({b.numberInSeries})</MenuItem>
+                    </ConditionalWrapper>
+                  )
+                })}
               </Select>
             </FormControl>
           )}
