@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect, useMemo } from 'react';
 import Box from '@/app/components/Box/Box';
 import Typography from '@/app/components/Typography/Typography';
 import Select from '@/app/components/Select/Select';
@@ -18,6 +18,8 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useTheme, useMediaQuery } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import QuestionHistory from '../../utils/QuestionHistory';
 
 const ConversationInterface = ({
@@ -45,6 +47,34 @@ const ConversationInterface = ({
   const isM = useMediaQuery(theme.breakpoints.up('md'));
   const isS = useMediaQuery(theme.breakpoints.up('sm'));
 
+
+  const [isExpanded, setIsExpanded] = useState(false);
+  // useEffect(() => {
+  //   console.log('Series Data:', series);
+  //   console.log('Selected Series:', selectedSeries);
+  //   console.log('Selected Book:', selectedBook);
+  //   console.log('Selected Chapter:', selectedChapter);
+  // }, [series, selectedSeries, selectedBook, selectedChapter]);
+
+
+  // Safe access to series data
+  // const selectedSeriesBooks = useMemo(() => {
+  //   if (!series || !selectedSeries) return [];
+  //   const found = series.find(s => s.seriesId === selectedSeries);
+  //   if (!found) {
+  //     console.warn('Selected series not found in series data:', selectedSeries);
+  //     return [];
+  //   }
+  //   return found.books || [];
+  // }, [series, selectedSeries]);
+
+  // Expand UI if no series is selected
+  // useEffect(() => {
+  //   if (!selectedSeries) {
+  //     setIsExpanded(true);
+  //   }
+  // }, [selectedSeries]);
+
   const questionHistory = useRef(new QuestionHistory());
 
   const selectedSeriesBooks = selectedSeries ? series.find(s => s.seriesId === selectedSeries).books : [];
@@ -68,65 +98,132 @@ const ConversationInterface = ({
     originalHandleAskQuestion();
   };
 
+  const currentLabelFontProps = {
+    fontFamily: theme.typography.currentLabel.fontFamily,
+    fontSize: isS ? '1.7rem' : '1.2rem',
+    '&.Mui-focused': {
+      fontFamily: theme.typography.currentLabel.fontFamily,
+    },
+    top: "-10px"
+  };
+
   return (
     <>
       <Box sx={{ display: 'flex', flexDirection: isXL || isL || isM ? 'row' : 'column', gap: 2 }}>
-        <FormControl fullWidth={isS}>
-          <InputLabel 
-            id="series-select-label"
-            sx={{ 
-              fontFamily: theme.typography.inputLabel.fontFamily,
-              fontSize: theme.typography.inputLabel.fontSize,
-              '&.Mui-focused': {
-                fontFamily: theme.typography.inputLabel.fontFamily,
-              },
-              top: "-10px"
+        <Box sx={{ 
+          display: 'flex', 
+          gap: 2,
+          padding: 2,
+          borderRadius: 1,
+          boxShadow: 0,
+          width: '100%',
+          justifyContent: 'space-between',
+          alignItems: 'center'
+        }}>
+          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
+            {!isExpanded && selectedSeries && (
+              <>
+                <Typography sx={currentLabelFontProps}>
+                  <strong>Series:</strong> {series.find(s => s.seriesId === selectedSeries)?.seriesName}
+                </Typography>
+                {selectedBook && (
+                  <>
+                    <Typography sx={currentLabelFontProps}>
+                      <strong>Book:</strong> {selectedSeriesBooks.find(b => b.numberInSeries === selectedBook)?.title}
+                    </Typography>
+                    <Typography sx={currentLabelFontProps}>
+                      <strong>Chapter:</strong> {selectedChapter || 1}
+                    </Typography>
+                  </>
+                )}
+              </>
+            )}
+            {isExpanded && (
+              <>
+                <Typography sx={{fontFamily: theme.typography.introMessage.fontFamily}}>
+                  Pick a series, book, and chapter to start a conversation. I'll try to remember your choices for next time.
+                </Typography>
+              </>
+            )}
+          </Box>
+          <Button
+            size="small"
+            variant="outlined"
+            color="primaryDark"
+            onClick={() => setIsExpanded(!isExpanded)}
+            startIcon={isExpanded ? <ExpandLessIcon /> : <ExpandMoreIcon />}
+            sx={{
+              minWidth: 'auto',
+              marginLeft: 'auto'
             }}
           >
-            Series
-          </InputLabel>
-          <Select
-            labelId="series-select-label"
-            id="series-select"
-            label="Series"
-            value={selectedSeries || ''}
-            onChange={handleSeriesChange}
-            disabled={series.length === 0 || conversationLoading}
-          >
-            {series.map(s => (
-              <MenuItem key={s.seriesId} value={s.seriesId}>{s.seriesName}</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth={isS}>
-          <InputLabel 
-            id="book-select-label"
-            sx={{ 
-              fontFamily: theme.typography.inputLabel.fontFamily,
-              fontSize: theme.typography.inputLabel.fontSize,
-              '&.Mui-focused': {
-                fontFamily: theme.typography.inputLabel.fontFamily,
-              },
-              top: "-10px"
-            }}
-          >
-            Book
-          </InputLabel>
-          <Select
-            labelId="book-select-label"
-            id="book-select"
-            label="Book"
-            value={selectedBook || ''}
-            onChange={handleBookChange}
-            disabled={!selectedSeries || conversationLoading}
-          >
-            {selectedSeriesBooks.map(b => (
-              <MenuItem key={b.numberInSeries} value={b.numberInSeries}>{b.title} ({b.numberInSeries})</MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+            {isExpanded ? 'Close' : 'Change'}
+          </Button>
+        </Box>
       </Box>
-      {selectedSeries && selectedBook ? (
+
+      {isExpanded && (
+        <Box sx={{ display: 'flex', flexDirection: isXL || isL || isM ? 'row' : 'column', gap: 2, mt: 2 }}>
+          <FormControl fullWidth={isS}>
+            <InputLabel 
+              id="series-select-label"
+              sx={{ 
+                fontFamily: theme.typography.inputLabel.fontFamily,
+                fontSize: theme.typography.inputLabel.fontSize,
+                '&.Mui-focused': {
+                  fontFamily: theme.typography.inputLabel.fontFamily,
+                },
+                top: "-10px"
+              }}
+            >
+              Series
+            </InputLabel>
+            <Select
+              labelId="series-select-label"
+              id="series-select"
+              label="Series"
+              value={selectedSeries || ''}
+              onChange={handleSeriesChange}
+              disabled={series.length === 0 || conversationLoading}
+            >
+              {series.map(s => (
+                <MenuItem key={s.seriesId} value={s.seriesId}>{s.seriesName}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          {selectedSeriesBooks.length > 1 && (
+            <FormControl fullWidth={isS}>
+              <InputLabel 
+                id="book-select-label"
+                sx={{ 
+                  fontFamily: theme.typography.inputLabel.fontFamily,
+                  fontSize: theme.typography.inputLabel.fontSize,
+                  '&.Mui-focused': {
+                    fontFamily: theme.typography.inputLabel.fontFamily,
+                  },
+                  top: "-10px"
+                }}
+              >
+                Book
+              </InputLabel>
+              <Select
+                labelId="book-select-label"
+                id="book-select"
+                label="Book"
+                value={selectedBook || ''}
+                onChange={handleBookChange}
+                disabled={!selectedSeries || conversationLoading}
+              >
+                {selectedSeriesBooks.map(b => (
+                  <MenuItem key={b.numberInSeries} value={b.numberInSeries}>{b.title} ({b.numberInSeries})</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          )}
+        </Box>
+      )}
+
+      {isExpanded && selectedSeries && selectedBook ? (
         <Box sx={{ marginTop: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 2, marginBottom: 1 }}>
             <Button
@@ -176,13 +273,8 @@ const ConversationInterface = ({
             }}
           />
         </Box>
-      ) : (
-        <Box sx={{ marginTop: 2, marginBottom: 2 }}>
-          <Typography>
-            Please select a series and book.
-          </Typography>
-        </Box>
-      )}
+      ) : null}
+
       <ConditionalWrapper
         condition={conversation.length > 0 || conversationLoading}
         wrapper={(children) => (

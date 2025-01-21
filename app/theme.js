@@ -117,6 +117,13 @@ const theme = createTheme({
       lineHeight: 1.2,
       letterSpacing: '0.02em'
     },
+    currentLabel: {
+      fontFamily: kidTShirt.style.fontFamily,
+      // Optional additional styling
+      fontSize: '2rem',
+      lineHeight: 1.2,
+      letterSpacing: '0.02em'
+    },
     botMessage: {
       fontFamily: libreCaslonText.style.fontFamily,
       fontSize: '1rem',

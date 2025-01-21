@@ -2,7 +2,7 @@
 'use client';
 
 // Import necessary React hooks and components
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, use } from 'react';
 import PageHeader from '@/app/containers/PageHeader/PageHeader';
 import Box from '@/app/components/Box/Box';
 import Typography from '@/app/components/Typography/Typography';
@@ -162,20 +162,9 @@ export default function HomePage() {
   useEffect(() => {
     const fetchSeries = async () => {
       try {
+        console.log('Fetching series data...');
         const seriesData = await getSeries();
         setSeries(seriesData);
-        const lastSeries = getLastSeries();
-        // Check if lastSeries exists in the fetched data
-        if (lastSeries && seriesData.some(series => series.id === lastSeries.id)) {
-          setSelectedSeries(lastSeries);
-          const history = getConversationHistory(lastSeries);
-          setConversation(history);
-          if (history.length > 0) {
-            const lastEntry = history[history.length - 1];
-            setSelectedBook(lastEntry.book || null);
-            setSelectedChapter(lastEntry.chapter || null);
-          }
-        }
       } catch (error) {
         console.error('Error fetching series:', error);
         setErrorMessage("Sorry, but I'm having trouble getting into my library. Please try again later.");
@@ -185,6 +174,24 @@ export default function HomePage() {
 
     fetchSeries();
   }, []);
+
+  useEffect(() => {
+    if (!series.length) return;
+
+    const lastSeries = getLastSeries();
+    // Check if lastSeries exists in the fetched data
+    if (lastSeries && series.some(s => s.id === lastSeries.id)) {
+      console.log('lastSeries found and lastSeries in seriesData');
+      setSelectedSeries(lastSeries);
+      const history = getConversationHistory(lastSeries);
+      setConversation(history);
+      if (history.length > 0) {
+        const lastEntry = history[history.length - 1];
+        setSelectedBook(lastEntry.book || null);
+        setSelectedChapter(lastEntry.chapter || null);
+      }
+    }
+  }, [series]);
 
   // Scroll to the end of the conversation when it updates
   useEffect(() => {
